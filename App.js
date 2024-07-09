@@ -1,18 +1,18 @@
-
+import React from "react"
+import ReactDOM from "react-dom/client";
 const root  = ReactDOM.createRoot(document.getElementById("root"));
-const root1  = ReactDOM.createRoot(document.getElementById("root1"));
-const element = React.createElement("div", {id:"parent"}, [
-  React.createElement("div", {id:"child1"}, [
-    React.createElement("h1", {id:"heading1"}, "I am an h1 tag"),
-    React.createElement("h2", {id:"heading2"}, "i am an h2 tag")
-  ]),
-  React.createElement("div", {id:"child2"}, [
-    React.createElement("h1", {}, "I am an h1 tag"),
-    React.createElement("h2", {}, "i am an h2 tag")
-  ])
-])
 
-alert("u can see darshan")
+//React.createElement => ReactElement => JS Object => HTMLElement(render)
+const heading = React.createElement(
+  "h1",
+  {id : "heading"},
+  "hey its darshan in jsx"
+);
+console.log(heading) 
 
-root.render(element)
-root1.render(element)
+//JSX (transpiled before it reches the JS) - Babel
+
+//JSX => React.createElement => ReactElement-JS Object => HTMLElement(render)
+const JSXHeading = <h1 id="heading" tabIndex="32">hey its darshan in jsx</h1>
+console.log(JSXHeading)
+root.render(JSXHeading)
