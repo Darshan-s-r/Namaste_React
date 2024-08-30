@@ -7,3 +7,10 @@
   color:pink;
   margin-top : 0px;
 }
+
+.resto-container{
+  display: flex;
+  row-gap: 20px;
+  column-gap: 20px;
+  flex-wrap: wrap
+}
