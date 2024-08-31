@@ -1,6 +1,6 @@
-.container {
+.header-container {
   display : "flex";
-
+  justify-items: center;
 }
 
 .item {

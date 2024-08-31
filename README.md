@@ -379,3 +379,78 @@ useEffect(()=>{
   }
 })
 ```
+
+# custom hooks
+
+* hooks are the just a js utility functions with certun responsiblity of thair own
+* custom hooks are just a js function that do specific task, they are not that special or diffrent
+
+``` js
+import {useState, useEffect} from "react";
+
+const useOnlineStatus = ()=>{
+  const [onlineStatus, setOnlineStatus] = useState(true)
+  useEffect(()=>{
+    window.addEventListener("offline", ()=>{
+      setOnlineStatus(false);
+    })
+    window.addEventListener("online", ()=>{
+      setOnlineStatus(true);
+    })
+  },[])
+
+  return onlineStatus;
+}
+
+export default useOnlineStatus;
+```
+
+* ex 2
+``` js
+import {RESTAURANT_URL, URL_END} from "../utils/constants"
+import {useState, useEffect} from "react"
+const useRestaurantMenu = (resId)=>{
+  const [resInfo, setResInfo] = useState(null);
+  useEffect(()=>{
+    fetchData();
+  }, [])
+
+  async function fetchData(){
+    try{
+      const data = await fetch(RESTAURANT_URL+resId+URL_END)
+      const jsonData = await data.json();
+  
+      setResInfo(jsonData.data);
+    }catch(err){
+      console.log(err)
+    }
+   
+  }
+
+  return resInfo;
+}
+
+export default useRestaurantMenu;
+```
+
+# lazy loading, Chunking, {optimising app}
+* allso called as [Code splitting, Dynamic Bundling, on demand loading, dynamic import ]
+
+* what lazy does is, it  only import the file that need to run that particular component later when it needs, react saparates that particular component from the bundling into single big file.
+
+* we can achive that by using (lazy and Suspense) from react
+* lazy is a function that takes a callback as argument
+* Suspense is a component that has {fallback} prop whitch takes a JSX (react component like shimmer ui)
+
+``` js
+import React, { lazy, Suspense} from "react"
+
+//how to call lazy
+const About = lazy(()=> import("./components/About"));   //this {import} keyword is not regular import it is specific for lazy function
+
+//this code is from inside createBrowserRouter
+      {
+        path : "/about",
+        element : (<Suspense fallback={<p>loading....</p>}><About /></Suspense>)   //fallback prop must be provided else throw error
+      },
+```
