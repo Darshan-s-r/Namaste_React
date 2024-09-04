@@ -24,14 +24,19 @@ console.log("child contructor")
 
   async componentDidMount(){
     console.log( this.state.user.name +  "child did mount")
-    const data = await fetch("https://jsonplaceholder.typicode.com/users");
-    const jsonData = await data.json();
-    this.setState({
-      user : jsonData[0]
-    })
-    this.timer = setInterval(()=>{
-      console.log("setinterval")
-    }, 1000)
+    try{
+      const data = await fetch("https://jsonplaceholder.typicode.com/users");
+      const jsonData = await data.json();
+      this.setState({
+        user : jsonData[0]
+      })
+      this.timer = setInterval(()=>{
+        console.log("setinterval")
+      }, 1000)
+    }catch(err){
+      console.log(err)
+    }
+   
   }
   componentDidUpdate(){
     console.log(name + "componentDidUpdate")

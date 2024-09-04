@@ -454,3 +454,85 @@ const About = lazy(()=> import("./components/About"));   //this {import} keyword
         element : (<Suspense fallback={<p>loading....</p>}><About /></Suspense>)   //fallback prop must be provided else throw error
       },
 ```
+
+# higher order component
+* function that takes a component as argument and enhance it then return's a new component
+``` js
+export default function Card({card}) {
+  return (
+    <Link className="bg-slate-100 hover:bg-slate-200 rounded-lg m-1 p-2 w-72" to={`http://localhost:1234/restaurant/${card?.id}`}>
+      <h1 className="text-xl font-bold">{card?.name}</h1>
+      <p>Rating : {card?.avgRatingString}</p>
+      <p>cuisines : {card?.cuisines.join(", ")}</p>
+    </Link> 
+  )
+}
+
+
+export const PromoteCard = (Card)=>{
+    return (props)=>{
+      return <div className="flex">
+        <label className="absolute mt-2 text-green-200 rounded-lg ">Promoted</label>
+        <Card {...props}/>
+      </div>
+    }
+}
+```
+# handling data
+
+* controled component
+A Controlled Component is one that takes its current value through props and notifies changes through callbacks like onChange. A parent component "controls" it by handling the callback and managing its own state and passing the new values as props to the controlled component. You could also call this a "dumb component".
+
+* uncontrolled component
+A Uncontrolled Component is one that stores its own state internally, and you query the DOM using a ref to find its current value when you need it. This is a bit more like traditional HTML.
+
+* lifting the state up
+Lifting state up in React is a pattern that helps avoid complex state management by moving state up the component tree to a common ancestor. This ancestor component can then pass the state down to its child components as props.
+
+# createContext, useContext from react
+
+* creating the context
+``` js
+import {createContext} from "react";
+
+const UserContext = createContext({
+  userName : "default user"
+})
+
+export default UserContext
+```
+
+* use context inside functional component
+``` js
+const AppLayout = () =>{
+  const [userName, setUserName] = useState("Darshan")
+  return(
+    <UserContext.Provider value={{userName : userName, setUserName:setUserName}}>    // should wrap around the context.Provider to the whole app to acess and modify the value
+    <div>
+      <Header />
+      <Outlet />
+    </div>
+   </UserContext.Provider>
+  )
+}
+
+// this is how to modify the context data
+  const {userName, setUserName} = useContext(UserContext);
+
+      <input type="text" value={userName} onChange={(e)=>setUserName(e.target.value)}></input>
+
+```
+
+* use context inside class component
+``` js
+import UserContext from '../utils/UserContext';
+     <UserContext.Consumer>
+     {(user)=>{
+      return <h1>{user.userName}</h1>
+     }}
+     </UserContext.Consumer>
+```
+
+
+
+
