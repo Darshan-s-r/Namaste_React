@@ -10,6 +10,9 @@ import Error from "./components/Error"
 import RrestaurantMenu from "./components/RestaurantMenu";
 import useOnlineStatus from "./utils/useOnlineStatus";
 import UserContext from './utils/UserContext';
+import { Provider } from "react-redux";
+import appStore from "./utils/appStore";
+import Cart from "./components/Cart";
 
 const Title = ()=> <h1 className="p-5 text-xl font-bold">Namaste react</h1>
 
@@ -56,12 +59,14 @@ const About = lazy(()=> import("./components/About"));
 const AppLayout = () =>{
   const [userName, setUserName] = useState("Darshan")
   return(
+    <Provider store={ appStore}>
     <UserContext.Provider value={{userName : userName, setUserName:setUserName}}>
     <div>
       <Header />
       <Outlet />
     </div>
    </UserContext.Provider>
+   </Provider>
   )
 }
 
@@ -82,9 +87,14 @@ const appRouter = createBrowserRouter([
       {
         path : "/contact",
         element : <Contact />
-      },{
+      },
+      {
         path: "/restaurant/:resId",       // dynamic routes  {:restId} can takes any id dynamically
         element: < RrestaurantMenu />
+      },
+      {
+        path : "/cart",
+        element : <Cart />
       }
     ]
   },

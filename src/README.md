@@ -532,7 +532,125 @@ import UserContext from '../utils/UserContext';
      }}
      </UserContext.Consumer>
 ```
+# reduxtoolkit  and react-redux
+* what is redux
+Redux is a JavaScript library for predictable and maintainable global state management. It helps developers write applications that behave consistently, run in different environments (client, server, and native), and are easy to test.
+
+* what is redux toolkit
+Redux Toolkit (RTK) is a set of tools for building Redux applications. It simplifies the process of writing Redux logic by providing good defaults, catching common mistakes, and allowing for simpler code. RTK was created to address three common concerns about Redux:
+
+Store setup: RTK provides a simple way to set up a Redux store, eliminating the need to hand-write store configuration code.
+Reducer logic: RTK includes utility functions for defining reducers, making it easier to manage state updates.
+Async logic: RTK bundles Redux Thunk, a popular library for handling asynchronous actions, out of the box.
+
+* write data to redux store -> when you click the add button it dispatches a Action, whitch calls a reducer function whitch updates the sclice of our redux store. 
+
+* read data -> we need to subscribe our component  to the store throw selector to acces or to sync with the sclice of our redux store.
+![Redux read and write diagram](screenShots/Redux-read-write.png)
+
+* how to create store
+``` js
+import { configureStore } from "@reduxjs/toolkit";
+import cartReducer from "./cartSlice";
+const appStore = configureStore({
+    reducer :{
+        cart: cartReducer 
+    }
+})
+
+export default appStore;
+```
+
+* how to create slice
+``` js
+import { createSlice } from "@reduxjs/toolkit";
+
+const cartSlice = createSlice({
+  name: "cart",
+  initialState : { 
+    items : []
+  },
+  reducers : {               // it is not exported
+
+    //vanila (older) Redux => DON'T MUTATE STATE, returning was mandatory
+    // const newState = [...state];
+    // newState.items.push(action.payload);
+    // return newState;
 
 
+    //now in Redux Toolkit
+    //we HAVE to mutate the state  , return is not mandatory
+    addItem : (state, action) =>{
+      state.items.push(action.payload)    
+    },
+    removeItem : (state) =>{
+      state.items.pop()
+    }, 
+    clearItems : (state) => {
+      // newer reduxToolkit say's either mutate the existing sate or return the new state
+      state.items.length = 0   // or just do ( return {items:[]}; ) //returned value will be the new state
+    }
+  }
+})
+// need to export thes two reducer and actions are the properties of cartSclice that can be acessed
+export default cartSlice.reducer;         // this is different from reducers 
+export const {addItem, removeItem, clearItems} = cartSlice.actions;
+```
 
+* providing the store to the app
+``` js
+import { Provider } from "react-redux";
+import appStore from "./utils/appStore";
+const AppLayout = () =>{
+  const [userName, setUserName] = useState("Darshan")
+  return(
+    <Provider store={ appStore}>    <!-- wrap around the app and pass the store prop --> 
+    <UserContext.Provider value={{userName : userName, setUserName:setUserName}}>
+    <div>
+      <Header />
+      <Outlet />
+    </div>
+   </UserContext.Provider>
+   </Provider>
+  )
+}
+```
 
+* subsribing to the store using selectors (to read the state)
+``` js
+import { useSelector } from 'react-redux';
+//subscribe to the store using selector
+const cartItems = useSelector((store) => store.cart.items);  // have to mention whitch state to subscribe
+// how to use
+
+//can allso do like this, but don't do it
+const store = useSelector((store)=> store);
+const {cartitems} = store.cart.items;
+/////////////////  don't do the above it result in performance issue ///////////////
+    <Link to="/cart" className="hover:bg-green-700">cart - {cartItems.length}</Link>
+```
+
+* dispatching action 
+``` js
+import { useDispatch } from 'react-redux'       //hook used to dispatch the action
+import { addItem } from '../utils/cartSlice'   //reducer function that need
+
+export default function RestaurantItemCard({item}) {
+  const dispatch = useDispatch()
+  const handleAddItem = ()=>{
+      dispatch(addItem(item.card?.info?.name));    // item.card?.info?.name this will be the payload (action.payload)
+  }
+  return (
+    <div className="m-2 border-gray-200 border-b-2 flex">
+      <div className="w-10/12">
+      <p className="font-semibold">{item.card?.info?.name}</p>
+      <p className="font-semibold">₹ {item.card?.info?.price/100 || item.card?.info?.defaultPrice/100}</p>
+      <p>{item.card?.info?.description}</p>
+      </div>
+      <div className="w-2/12">
+<button className="m-auto bg-black text-white px-3 rounded-lg mt-4" onClick={handleAddItem}>add</button>
+      </div>
+    </div> 
+  )
+}
+```
