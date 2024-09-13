@@ -654,3 +654,69 @@ export default function RestaurantItemCard({item}) {
   )
 }
 ```
+# Redux Toolkit
+- Install @reduxjs/toolkit and react-redux
+- Build our store
+- Connect our store to our app
+- Slice (cartSlice)
+- dispatch (action)
+- Selector 
+
+# testing
+ * types of testing (devloper can do)
+ - Unit testing
+ - Integrated Testing
+ - End to end Testing - e2e testing
+
+ * react testing library   -> used to write test cases  -> uses JEST internally
+ * jest => jest is a delightful javaScript Testing Framework with a focus on simplicity.
+
+ * Setting up testing in our app
+ - Install React Testing Library
+ - Install jest
+ - Install Babel dependencies 
+ - Configure Babel
+ - Configure Parcel Config file to disable default babel transpilation
+ - jest configuration [  npx jest --init ]
+ - Installl jsdom library
+ - Install @babel/preset-react - to make JSX work in test cases
+ - Include @babel/preset-react inside my babel config
+ - Install @testing-library/jest-dom
+
+ ```js
+import {render, screen} from "@testing-library/react"
+import Contact from "../Contact"
+import "@testing-library/jest-dom"
+
+describe("Contact page test cases", ()=>{    //describe is  used to contain multiple testcases
+  test("shuld load contact us component", ()=>{
+      render(<Contact />);
+
+      // Querying
+      const header = screen.getByRole("heading")
+
+      //Assertion
+      expect(header).toBeInTheDocument();
+  })
+
+  it("shuld load name input", ()=>{   // test can allso be writern as { it } 
+    render(<Contact />);
+
+    // Querying
+    const nameInput = screen.getByPlaceholderText("name")
+    console.log(nameInput) // gives react element
+    //Assertion
+    expect(nameInput).toBeInTheDocument();
+})
+
+test("shuld load name input", ()=>{
+  render(<Contact />);
+
+  // Querying
+  const nameInput = screen.getByPlaceholderText("name")
+  console.log(nameInput) // gives react element
+  //Assertion
+  expect(nameInput.type).toBe('text');
+})
+})
+ ```
